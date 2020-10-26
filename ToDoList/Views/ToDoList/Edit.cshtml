@@ -5,34 +5,72 @@
 }
 
 <h2>Edit</h2>
-
-<h4>ToDo</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Seq" class="control-label"></label>
-                <input asp-for="Seq" class="form-control" />
-                <span asp-validation-for="Seq" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+<h4>To Do List</h4>
+@*<hr />
+    <div id="Edit" class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Seq" class="control-label"></label>
+                    <input asp-for="Seq" class="form-control" />
+                    <span asp-validation-for="Seq" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>*@
+
+<div id="jobId">
 </div>
+<div id="jobSeq">
+    <label for="seq">Sequence</label>
+    <input type="text" title="seq" id="jobSeq" />
+</div>
+<div id="jobTitle">
+    <label for="title">Job Title</label>
+    <input type="text" title="title" id="jobTitle" />
+</div>
+<input type="button" id="edit" value="Create New Job" />
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        $("#edit").click(function () {
+
+            var selectId = sessionStorage.getItem('id');
+            console.log(selectId);
+            var html = '<label for="id"> Job Id: ' + selectId + ' </label>';
+            $('#jobId').append(html);
+
+            var json = JSON.stringify({ id: selected, seq: $("#jobSeq").val(), title: $("#jobTitle").val() });
+            $.ajax({
+                url: 'https://localhost:44398/api/todolistapi/' + selected,
+                type: 'PUT',
+                contentType: 'application/json; charset=utf-8',
+                data: json,
+                dataType: 'json',
+                success: function () {
+                    location.href = "https://localhost:44398/";
+                },
+                error: function (status, xhr) {
+                    console.log("error");
+                }
+            });
+        });
+    </script>
 }

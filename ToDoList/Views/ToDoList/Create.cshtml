@@ -1,43 +1,49 @@
-﻿@model ToDoList.Models.ToDo
-
-@{
-    ViewData["Title"] = "Create";
-}
-
+﻿
 <h2>Create</h2>
 
 <h4>ToDo</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Seq" class="control-label"></label>
-                <input asp-for="Seq" class="form-control" />
-                <span asp-validation-for="Seq" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
-</div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <label for="id">ID</label>
+    <input type="text" title="id" id="jobId" />
 </div>
+<div>
+    <label for="seq">Sequence</label>
+    <input type="text" title="seq" id="jobSeq" />
+</div>
+<div>
+    <label for="title"> Job Title</label>
+    <input type="text" title="title" id="jobTitle" />
+</div>
+<input type="button" id="create" value="Create New Job" />
+
+<div>
+    <a href="https://localhost:44398/">back to list</a>
+</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        $("#create").click(function () {
+
+            var json = JSON.stringify({ id: $("#jobId").val(), seq: $("#jobSeq").val(), title: $("#jobTitle").val() });
+            $.ajax({
+                url: 'https://localhost:44398/api/todolistapi/create-to-do',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: json,
+                dataType: 'json',
+                success: function () {
+                    location.href = "https://localhost:44398/";
+                    console.log(json);
+                },
+                error: function (data, status, xhr) {
+                    console.log("error");
+                }
+            });
+        });
+    </script>
 }

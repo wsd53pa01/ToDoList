@@ -3,27 +3,27 @@
 @{
     ViewData["Title"] = "Details";
 }
+@{ 
+    var job = ViewBag.job;
+}
 
 <h2>Details</h2>
 
 <div>
-    <h4>ToDo</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Seq)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Seq)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-    </dl>
+    <table>
+        <h2>Job To Do</h2>
+        <tr>
+            <td> @Html.DisplayNameFor(model => model.Seq) </td>
+            <td> @job.Seq </td>
+        </tr>
+        <tr>
+            <td> @Html.DisplayNameFor(model => model.Title) </td>
+            <td> @job.Title </td>
+        </tr>
+        <br>
+    </table>
 </div>
 <div>
+    <a asp-action="Edit" asp-route-id=@job.Id>Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

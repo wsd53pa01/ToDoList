@@ -1,49 +1,137 @@
 ﻿
-@{
-    ViewData["Title"] = "Index";
-}
-@{
-    var list = ViewBag.List;
-    var deletedList = ViewBag.DeletedList;
-}
 
-<div class="container">
-    <h2>To Do List</h2>
-    @Html.ActionLink("Create New Job", "Create")
-    <table>
-        @for (int i = 0; i < list.Count; i++)
-        {
-            <tr>
-                <td>
-                    @list[i].Seq
-                </td>
-                <td>
-                    @list[i].Title
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { Id = @list[i].Id }) |
-                    @Html.ActionLink("Details", "Details", new { Id = @list[i].Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { Id = @list[i].Id })
-                </td>
-            </tr>
-        }
-    </table>
 
-    @if(deletedList != null)
-    {
-        <h2>Deleted List</h2>
-        <table>
-            @for (int i = 0; i < deletedList.Count; i++)
-            {
-                <tr>
-                    <td>
-                        @deletedList[i].Seq
-                    </td>
-                    <td>
-                        @deletedList[i].Title
-                    </td>
-                </tr>
-            }
-        </table>
-    }
+<h3 id="test" class="success">工作</h3>
+<table>
+    <thead>
+        <tr>
+            <th><a href="/ToDoList/Create">新增工作</a></th>
+        </tr>
+    </thead>
+    <tbody id="list-table"></tbody>
+</table>
+<input type="button" id="detail" value="Detail" />
+<input type="button" id="edit" value="Edit" />
+<input type="button" id="delete" value="Delete" />
+
+<div id="JobEdit">
 </div>
+
+<div id="JobDetail">
+</div>
+
+<h3>完成</h3>
+<table id="done-table">
+</table>
+
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+        function getData(place) {
+            var url = 'https://localhost:44398/api/todolistapi/'
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                type: 'GET',
+                success: function (data, status, xhr) {
+                    $('#done-table').empty()
+                    for (let i in data) {
+                        if (data[i].seq > 0) {
+                            var html = '<tr> <td> <input type="radio" name="job" value="' + data[i].id + '" />' + data[i].title + ' </td> </tr>'
+                            $(place).append(html)
+                        }
+                        else {
+                            var done = '<tr> <td> <input type="checkbox" checked="checked" /> <strike>' + data[i].title + '</strike> </td> </tr>'
+                            $('#done-table').append(done)
+                        }
+                    }
+                },
+                error: function (status, xhr) {
+                }
+            });
+
+        }
+        getData('#list-table');
+
+        //var selectedIDs = new Array();
+
+        $("#delete").click(function () {
+            var selected = $('input[type =radio]:checked').val();
+            //$('input[type=checkbox]').each(function () {
+            //    this.checked ? selectedIDs.push($(this).val()) : null;
+            //});
+            //for (let i in selectedIDs) {
+            //    $.ajax({
+            //        url: 'https://localhost:44398/api/todolistapi/' + selectedIDs[i],
+            //        dataType: 'json',
+            //        type: 'DELETE',
+            //        success: function () {
+            //            $('#list-table').empty();
+            //            getData('#list-table');
+            //        },
+            //        error: function (data, status, xhr) {
+            //        }
+            //    });
+            //}
+            $.ajax({
+                url: 'https://localhost:44398/api/todolistapi/' + selected,
+                dataType: 'json',
+                type: 'DELETE',
+                success: function () {
+                    $('#list-table').empty();
+                    getData('#list-table');
+                },
+                error: function (status, xhr) {
+                }
+            });
+        });
+
+        //selectedids.pop();
+        $("#edit").click(function () {
+
+            var editSelected = '<div><label for="seq">Sequence</label> <input type = "text" id = "Seq" title = "seq" /></div>' + '<div><label for="title">Job Title</label> <input type="text" id="Title" title="title" /></div>' + '<input type="button" id="EditJob" value="Edit Job" />';
+            $('#JobEdit').append(editSelected);
+
+            $("#EditJob").click(function () {
+                var selected = $('input[type =radio]:checked').val();
+                var json = JSON.stringify({ id: selected, seq: $('#Seq').val(), title: $('#Title').val() });
+                $.ajax({
+                    url: 'https://localhost:44398/api/todolistapi/edit-to-do/' + selected,
+                    type: 'PUT',
+                    contentType: 'application/json; charset=utf-8',
+                    data: json,
+                    dataType: 'json',
+                    success: function () {
+                        $('#list-table').empty();
+                        getData('#list-table');
+                    },
+                    error: function (status, xhr) {
+                    }
+                });
+                $('#JobEdit').remove();
+            });
+
+        });
+
+        $("#detail").click(function () {
+            var selected = $('input[type =radio]:checked').val();
+            $.ajax({
+                url: 'https://localhost:44398/api/todolistapi/detail/' + selected,
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    var detailSelected = '<table><tr><td>Seq: ' + data.seq + '</td></tr><tr><td>Title: ' + data.title + '</td></tr></table >';
+                    $('#JobDetail').append(detailSelected);
+                },
+                error: function (status, xhr) {
+                }
+            });
+        });
+
+
+    </script>
+}
