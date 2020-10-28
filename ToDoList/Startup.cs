@@ -21,17 +21,6 @@ namespace ToDoList
             Configuration = configuration;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Startup(IHostingEnvironment env)
-        {
-            using (var data = new DatabaseContext())
-            {
-                data.Database.EnsureCreated();
-            }
-        }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -46,11 +35,7 @@ namespace ToDoList
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            ///
-            ///
-            services.AddMvc();
-            services.AddEntityFrameworkSqlite().AddDbContext<DatabaseContext>();
-
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

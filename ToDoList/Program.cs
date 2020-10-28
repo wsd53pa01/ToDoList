@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
+using Dapper;
+using Npgsql;
+using ToDoList.Models;
 
 namespace ToDoList
 {
@@ -16,6 +13,12 @@ namespace ToDoList
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
+
+            //using (var connection = new NpgsqlConnection("Host=localhost;Port=5432;Database=JobData;User Id=postgres;Password=1234;"))
+            //{
+            //    connection.Open();
+            //    var value = connection.Query<string>("Select * from TODOLIST;");
+            //}
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

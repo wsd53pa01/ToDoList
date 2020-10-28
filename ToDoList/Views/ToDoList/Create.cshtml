@@ -4,10 +4,6 @@
 <h4>ToDo</h4>
 
 <div>
-    <label for="id">ID</label>
-    <input type="text" title="id" id="jobId" />
-</div>
-<div>
     <label for="seq">Sequence</label>
     <input type="text" title="seq" id="jobSeq" />
 </div>
@@ -29,7 +25,7 @@
 
         $("#create").click(function () {
 
-            var json = JSON.stringify({ id: $("#jobId").val(), seq: $("#jobSeq").val(), title: $("#jobTitle").val() });
+            var json = JSON.stringify({ seq: $("#jobSeq").val(), title: $("#jobTitle").val() });
             $.ajax({
                 url: 'https://localhost:44398/api/todolistapi/create-to-do',
                 type: 'POST',

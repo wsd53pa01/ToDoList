@@ -8,6 +8,7 @@ namespace ToDoList.Models
 {
     public class ToDo
     {
+        [Key]
         public int Id { get; set; }
 
         [Display(Name = "Job Piority")]
